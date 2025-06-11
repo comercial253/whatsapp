@@ -40,6 +40,13 @@ async function loadMessages(){
     const p = document.createElement('p');
     p.textContent = `${m.direction}: ${m.message}`;
     messagesDiv.appendChild(p);
+    if (m.media_data) {
+      const link = document.createElement('a');
+      link.href = `data:${m.media_mimetype};base64,${m.media_data}`;
+      link.textContent = 'attachment';
+      link.target = '_blank';
+      messagesDiv.appendChild(link);
+    }
   });
 }
 

@@ -11,7 +11,7 @@ The Node.js server (`server/index.js`) exposes the following endpoints:
 - `POST /login` – authenticate a user
 - `POST /messages/:userId` – store and send a message for a given user
 - `GET /messages/:userId` – list stored messages for that user
-- `POST /webhook` – receive incoming WhatsApp webhooks
+- `POST /webhook` – receive incoming WhatsApp webhooks in the format provided by waapi.app
 - `GET /conversations` – list all conversations
 - `GET /messages/conversation/:id` – list messages of a conversation
 - `POST /conversations/:id/assign` – assign a conversation to a user
@@ -32,6 +32,22 @@ Set the following environment variables before starting if you want to connect t
 - `WA_INSTANCE_ID` – the instance id to use
 
 The server listens on port `3000` by default.
+
+### Webhook format
+
+The `/webhook` endpoint expects the JSON structure used by waapi.app. A simplified example:
+
+```json
+{
+  "event": "message",
+  "data": {
+    "message": { "from": "123456789@c.us", "body": "Hello" },
+    "media": { "mimetype": "image/jpeg", "data": "<base64>" }
+  }
+}
+```
+
+Incoming messages and optional media are stored in the `conversation_messages` table.
 
 ## Frontend
 

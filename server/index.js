@@ -49,6 +49,8 @@ const initDb = () => {
       user_id INTEGER,
       direction TEXT,
       message TEXT,
+      media_mimetype TEXT,
+      media_data TEXT,
       sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
   });
@@ -96,8 +98,8 @@ app.post('/messages/:userId', (req, res) => {
 
   const insertOutgoing = (convId) => {
     db.run(
-      'INSERT INTO conversation_messages(conversation_id, user_id, direction, message) VALUES (?,?,?,?)',
-      [convId, userId, 'outgoing', message],
+      'INSERT INTO conversation_messages(conversation_id, user_id, direction, message, media_mimetype, media_data) VALUES (?,?,?,?,?,?)',
+      [convId, userId, 'outgoing', message, null, null],
       function (err) {
         if (err) return res.status(400).json({ error: err.message });
         db.run(
@@ -136,16 +138,29 @@ app.get('/messages/:userId', (req, res) => {
 });
 
 app.post('/webhook', (req, res) => {
-  const { phone, message } = req.body;
-  if (!phone || !message) return res.status(400).end();
+  const event = req.body.event;
+  const msg = req.body?.data?.message;
+  const media = req.body?.data?.media;
+
+  if (event !== 'message' || !msg) return res.status(400).end();
+
+  const phone = (msg.from || msg.id?.remote || '').replace(/@c\.us$/, '');
+  const message = msg.body || '';
+  const mime = media?.mimetype || null;
+  const mediaData = media?.data || null;
+
+  if (!phone) return res.status(400).end();
+
   db.get('SELECT id FROM conversations WHERE phone = ?', [phone], (err, row) => {
     if (err) return res.status(500).end();
+
     const handleMessage = (convId) => {
       db.run(
-        'INSERT INTO conversation_messages(conversation_id, direction, message) VALUES (?, ?, ?)',
-        [convId, 'incoming', message]
+        'INSERT INTO conversation_messages(conversation_id, direction, message, media_mimetype, media_data) VALUES (?, ?, ?, ?, ?)',
+        [convId, 'incoming', message, mime, mediaData]
       );
     };
+
     if (!row) {
       db.run('INSERT INTO conversations(phone) VALUES (?)', [phone], function () {
         handleMessage(this.lastID);
@@ -154,6 +169,7 @@ app.post('/webhook', (req, res) => {
       handleMessage(row.id);
     }
   });
+
   res.json({ status: 'ok' });
 });
 
