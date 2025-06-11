@@ -2,17 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WhatsApp Support</title>
+<title>Support Chat</title>
+<style>
+  #chat { display: none; }
+  #messages { border: 1px solid #ccc; height: 300px; overflow-y: auto; margin-bottom: 5px; padding: 5px; }
+</style>
 </head>
 <body>
-<h1>Support Chat</h1>
-<form id="msgForm">
-  <input type="text" id="user_id" placeholder="User ID" required />
-  <input type="text" id="phone" placeholder="Phone" required />
-  <input type="text" id="message" placeholder="Message" required />
-  <button type="submit">Send</button>
-</form>
-<pre id="log"></pre>
+<div id="login">
+  <h2>Login</h2>
+  <input type="text" id="username" placeholder="Username" />
+  <input type="password" id="password" placeholder="Password" />
+  <button id="loginBtn">Login</button>
+</div>
+<div id="chat">
+  <h2>Chat</h2>
+  <div id="messages"></div>
+  <input type="text" id="phone" placeholder="Phone" />
+  <input type="text" id="message" placeholder="Message" />
+  <button id="sendBtn">Send</button>
+</div>
 <script src="script.js"></script>
 </body>
 </html>
