@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Agent Console</title>
+<style>
+  #agent, #chat { display: none; }
+  #wrapper { display: flex; }
+  #conversations { width: 30%; border:1px solid #ccc; height:300px; overflow-y:auto; margin-right:5px; }
+  #messages { flex:1; border:1px solid #ccc; height:260px; overflow-y:auto; margin-bottom:5px; }
+</style>
+</head>
+<body>
+<div id="login">
+  <h2>Login</h2>
+  <input type="text" id="username" placeholder="Username" />
+  <input type="password" id="password" placeholder="Password" />
+  <button id="loginBtn">Login</button>
+</div>
+<div id="wrapper">
+  <div id="agent">
+    <h2>Conversations</h2>
+    <div id="conversations"></div>
+  </div>
+  <div id="chat">
+    <h3 id="chatTitle"></h3>
+    <div id="messages"></div>
+    <input type="file" id="media" />
+    <input type="text" id="message" placeholder="Message" />
+    <button id="sendBtn">Send</button>
+    <button id="assignBtn">Assign to me</button>
+  </div>
+</div>
+<script src="agent.js"></script>
+</body>
+</html>
